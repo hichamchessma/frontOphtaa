@@ -1,0 +1,59 @@
+<div class="login-page">
+  <div class="login-container">
+    <div class="login-header">
+      <h1>Connexion à votre espace médical</h1>
+      <p class="subtitle">Connectez-vous pour accéder à votre espace personnel</p>
+    </div>
+    
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <div class="form-group">
+        <label for="email">Email ou Identifiant</label>
+        <div class="input-container">
+          <i class="fas fa-user"></i>
+          <input 
+            id="email" 
+            formControlName="email" 
+            type="email" 
+            placeholder="Entrez votre email" 
+            required
+          >
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Mot de passe</label>
+        <div class="input-container">
+          <i class="fas fa-lock"></i>
+          <input 
+            id="password" 
+            formControlName="password" 
+            type="password" 
+            placeholder="Entrez votre mot de passe" 
+            required
+          >
+        </div>
+      </div>
+
+      <div *ngIf="errorMessage" class="error">
+        <i class="fas fa-exclamation-circle"></i>
+        {{ errorMessage }}
+      </div>
+
+      <button type="submit" class="login-button">
+        <span>Se connecter</span>
+        <i class="fas fa-arrow-right"></i>
+      </button>
+
+      <div class="login-footer">
+        <a routerLink="/reset-password" class="forgot-password">
+          <i class="fas fa-key"></i>
+          Mot de passe oublié ?
+        </a>
+        <a routerLink="/register" class="create-account">
+          <i class="fas fa-user-plus"></i>
+          Créer un compte
+        </a>
+      </div>
+    </form>
+  </div>
+</div>

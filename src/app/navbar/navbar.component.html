@@ -1,0 +1,16 @@
+<nav class="navbar">
+  <div class="navbar-brand">
+    <img src="assets/images/logo.png" alt="Logo OphtaApp" class="logo">
+  </div>
+  
+  <div class="navbar-menu">
+    <div class="user-info">
+      <span class="doctor-name">Dr. {{ doctorName }}</span>
+    </div>
+    
+    <button class="logout-btn" (click)="logout()">
+      <i class="fas fa-sign-out-alt"></i>
+      Déconnexion
+    </button>
+  </div>
+</nav>
