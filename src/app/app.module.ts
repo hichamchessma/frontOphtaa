@@ -15,6 +15,7 @@ import { ConsultationComponent } from './components/consultation/consultation.co
 import { NotificationComponent } from './components/notification/notification.component';
 import { AuthService } from './services/auth.service';
 import { NavbarComponent } from './navbar/navbar.component';
+import { SidebarComponent } from './sidebar/sidebar.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { NavbarComponent } from './navbar/navbar.component';
     AppointmentComponent,
     ConsultationComponent,
     NotificationComponent,
-    NavbarComponent
+    NavbarComponent,
+    SidebarComponent
   ],
   imports: [
     BrowserModule,

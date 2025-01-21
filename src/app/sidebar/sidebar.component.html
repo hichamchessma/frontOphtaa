@@ -1,0 +1,36 @@
+<div class="sidebar" [class.open]="isOpen">
+  <nav class="sidebar-nav">
+    <ul>
+      <li>
+        <a routerLink="/dashboard" routerLinkActive="active">
+          <i class="fas fa-home"></i>
+          <span>Tableau de bord</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/patients" routerLinkActive="active">
+          <i class="fas fa-users"></i>
+          <span>Patients</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/appointments" routerLinkActive="active">
+          <i class="fas fa-calendar-alt"></i>
+          <span>Rendez-vous</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/medical-records" routerLinkActive="active">
+          <i class="fas fa-folder-open"></i>
+          <span>Dossiers médicaux</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/settings" routerLinkActive="active">
+          <i class="fas fa-cog"></i>
+          <span>Paramètres</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</div>

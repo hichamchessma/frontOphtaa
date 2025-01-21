@@ -1,6 +1,12 @@
 .main-content {
   padding: 0.5rem;
   margin-top: 64px; // Hauteur de la navbar
+  margin-left: 0; // Par défaut
   min-height: calc(100vh - 64px);
   background-color: #f8f9fa;
+  transition: margin-left 0.3s ease-in-out;
+  
+  &.sidebar-open {
+    margin-left: 250px;
+  }
 }
