@@ -24,6 +24,9 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatListModule } from '@angular/material/list';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -79,7 +82,10 @@ import { PatientsComponent } from './components/patients/patients.component';
     MatDialogModule,
     MatSelectModule,
     MatSnackBarModule,
-    MatTabsModule
+    MatTabsModule,
+    MatListModule,
+    MatDividerModule,
+    MatExpansionModule
   ],
   providers: [
     AuthService,

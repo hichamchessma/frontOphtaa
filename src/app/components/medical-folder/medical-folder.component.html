@@ -1,236 +1,146 @@
-<div class="medical-folder-container">
-  <!-- Affichage du chargement -->
-  <div class="spinner-container" *ngIf="loading">
+<div class="medical-folders-container">
+  <!-- Loading Spinner -->
+  <div class="spinner-overlay" *ngIf="loading">
     <mat-spinner diameter="50"></mat-spinner>
   </div>
 
-  <!-- Message d'erreur -->
-  <div *ngIf="error" class="error-message">
-    {{ error }}
+  <!-- Error Message -->
+  <div *ngIf="error" class="error-alert" role="alert">
+    <mat-icon>error</mat-icon>
+    <span>{{ error }}</span>
   </div>
 
-  <!-- Contenu du dossier médical -->
-  <div *ngIf="!loading && !error && medicalFolder" class="folder-content">
-    <!-- En-tête avec les informations du patient -->
-    <mat-card class="patient-info-card">
-      <mat-card-header>
-        <mat-card-title>{{ medicalFolder.patientName }}</mat-card-title>
-        <mat-card-subtitle>
-          Né(e) le {{ medicalFolder.dateOfBirth | date:'dd/MM/yyyy' }} 
-          - {{ medicalFolder.gender === 'M' ? 'Homme' : 'Femme' }}
-        </mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content>
-        <div class="patient-details">
-          <p *ngIf="medicalFolder.bloodType">
-            <strong>Groupe sanguin:</strong> {{ medicalFolder.bloodType }}
-          </p>
-          <p *ngIf="medicalFolder.allergies?.length">
-            <strong>Allergies:</strong> {{ getJoinedArray(medicalFolder.allergies) }}
-          </p>
-          <p *ngIf="medicalFolder.chronicDiseases?.length">
-            <strong>Maladies chroniques:</strong> {{ getJoinedArray(medicalFolder.chronicDiseases) }}
-          </p>
-        </div>
-      </mat-card-content>
-    </mat-card>
+  <!-- Main Content -->
+  <div class="content-container" *ngIf="!loading && !error">
+    <!-- Liste des dossiers -->
+    <div class="folders-list">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Dossiers Médicaux</mat-card-title>
+        </mat-card-header>
+        
+        <mat-card-content>
+          <mat-nav-list>
+            <a mat-list-item *ngFor="let folder of medicalFolders" 
+               (click)="selectFolder(folder)"
+               [class.selected]="folder === selectedFolder">
+              <mat-icon matListItemIcon>folder_shared</mat-icon>
+              <div matListItemTitle>{{ folder.patientName }}</div>
+              <div matListItemLine>
+                Né(e) le {{ folder.dateOfBirth | date:'dd/MM/yyyy' }}
+              </div>
+            </a>
+          </mat-nav-list>
 
-    <!-- Onglets pour les différentes sections -->
-    <mat-tab-group [(selectedIndex)]="selectedTab" class="folder-tabs" animationDuration="0ms">
-      <!-- Onglet Acuité visuelle -->
-      <mat-tab label="Acuité visuelle">
-        <div class="tab-content">
-          <form [formGroup]="visualAcuityForm" (ngSubmit)="updateVisualAcuity()">
-            <div class="form-row">
-              <mat-form-field appearance="fill">
-                <mat-label>Œil droit</mat-label>
-                <input matInput formControlName="rightEye" placeholder="Ex: 20/20">
-                <mat-error *ngIf="visualAcuityForm.get('rightEye')?.hasError('required')">
-                  Ce champ est requis
-                </mat-error>
-              </mat-form-field>
-
-              <mat-form-field appearance="fill">
-                <mat-label>Œil gauche</mat-label>
-                <input matInput formControlName="leftEye" placeholder="Ex: 20/20">
-                <mat-error *ngIf="visualAcuityForm.get('leftEye')?.hasError('required')">
-                  Ce champ est requis
-                </mat-error>
-              </mat-form-field>
-            </div>
-
-            <button mat-raised-button color="primary" type="submit" 
-                    [disabled]="!visualAcuityForm.valid || visualAcuityForm.pristine">
-              Mettre à jour
-            </button>
-          </form>
-
-          <div class="current-values" *ngIf="medicalFolder.visualAcuity">
-            <h3>Valeurs actuelles</h3>
-            <p><strong>Œil droit:</strong> {{ medicalFolder.visualAcuity.rightEye }}</p>
-            <p><strong>Œil gauche:</strong> {{ medicalFolder.visualAcuity.leftEye }}</p>
+          <div *ngIf="medicalFolders.length === 0" class="no-folders">
+            <mat-icon>folder_off</mat-icon>
+            <p>Aucun dossier médical disponible</p>
           </div>
-        </div>
-      </mat-tab>
+        </mat-card-content>
+      </mat-card>
+    </div>
 
-      <!-- Onglet Pression oculaire -->
-      <mat-tab label="Pression oculaire">
-        <div class="tab-content">
-          <form [formGroup]="eyePressureForm" (ngSubmit)="updateEyePressure()">
-            <div class="form-row">
-              <mat-form-field appearance="fill">
-                <mat-label>Œil droit (mmHg)</mat-label>
-                <input matInput type="number" formControlName="rightEye" min="0" max="50">
-                <mat-error *ngIf="eyePressureForm.get('rightEye')?.hasError('required')">
-                  Ce champ est requis
-                </mat-error>
-                <mat-error *ngIf="eyePressureForm.get('rightEye')?.hasError('min') || 
-                                eyePressureForm.get('rightEye')?.hasError('max')">
-                  La valeur doit être entre 0 et 50
-                </mat-error>
-              </mat-form-field>
-
-              <mat-form-field appearance="fill">
-                <mat-label>Œil gauche (mmHg)</mat-label>
-                <input matInput type="number" formControlName="leftEye" min="0" max="50">
-                <mat-error *ngIf="eyePressureForm.get('leftEye')?.hasError('required')">
-                  Ce champ est requis
-                </mat-error>
-                <mat-error *ngIf="eyePressureForm.get('leftEye')?.hasError('min') || 
-                                eyePressureForm.get('leftEye')?.hasError('max')">
-                  La valeur doit être entre 0 et 50
-                </mat-error>
-              </mat-form-field>
-            </div>
-
-            <button mat-raised-button color="primary" type="submit" 
-                    [disabled]="!eyePressureForm.valid || eyePressureForm.pristine">
-              Mettre à jour
-            </button>
-          </form>
-
-          <div class="current-values" *ngIf="medicalFolder.eyePressure">
-            <h3>Valeurs actuelles</h3>
-            <p><strong>Œil droit:</strong> {{ medicalFolder.eyePressure.rightEye }} mmHg</p>
-            <p><strong>Œil gauche:</strong> {{ medicalFolder.eyePressure.leftEye }} mmHg</p>
+    <!-- Détails du dossier sélectionné -->
+    <div class="folder-details" *ngIf="selectedFolder">
+      <mat-card>
+        <mat-card-header>
+          <div mat-card-avatar>
+            <mat-icon>person</mat-icon>
           </div>
-        </div>
-      </mat-tab>
+          <mat-card-title>{{ selectedFolder.patientName }}</mat-card-title>
+          <mat-card-subtitle>
+            Né(e) le {{ selectedFolder.dateOfBirth | date:'dd/MM/yyyy' }} 
+            - {{ selectedFolder.gender === 'M' ? 'Homme' : 'Femme' }}
+          </mat-card-subtitle>
+        </mat-card-header>
 
-      <!-- Onglet Diagnostics -->
-      <mat-tab label="Diagnostics">
-        <div class="tab-content">
-          <!-- Liste des diagnostics existants -->
-          <div class="diagnoses-list" *ngIf="medicalFolder.diagnoses?.length">
-            <h3>Historique des diagnostics</h3>
-            <mat-card *ngFor="let diagnosis of medicalFolder.diagnoses">
-              <mat-card-header>
-                <mat-card-title>{{ diagnosis.date | date:'dd/MM/yyyy' }}</mat-card-title>
-              </mat-card-header>
-              <mat-card-content>
-                <p><strong>Description:</strong> {{ diagnosis.description }}</p>
-                <p><strong>Traitement:</strong> {{ diagnosis.treatment }}</p>
-              </mat-card-content>
-            </mat-card>
-          </div>
+        <mat-card-content>
+          <mat-tab-group>
+            <!-- Informations générales -->
+            <mat-tab label="Informations">
+              <div class="tab-content">
+                <div class="info-grid">
+                  <div class="info-item" *ngIf="selectedFolder.bloodType">
+                    <mat-icon>bloodtype</mat-icon>
+                    <span class="label">Groupe sanguin:</span>
+                    <span class="value">{{ selectedFolder.bloodType }}</span>
+                  </div>
 
-          <!-- Formulaire pour ajouter un diagnostic -->
-          <form [formGroup]="diagnosisForm" (ngSubmit)="addDiagnosis()" class="diagnosis-form">
-            <h3>Nouveau diagnostic</h3>
-            <mat-form-field appearance="fill">
-              <mat-label>Description</mat-label>
-              <textarea matInput formControlName="description" rows="3"></textarea>
-              <mat-error *ngIf="diagnosisForm.get('description')?.hasError('required')">
-                Ce champ est requis
-              </mat-error>
-            </mat-form-field>
+                  <div class="info-item" *ngIf="selectedFolder.allergies?.length">
+                    <mat-icon>warning</mat-icon>
+                    <span class="label">Allergies:</span>
+                    <span class="value">{{ getJoinedArray(selectedFolder.allergies) }}</span>
+                  </div>
 
-            <mat-form-field appearance="fill">
-              <mat-label>Traitement</mat-label>
-              <textarea matInput formControlName="treatment" rows="3"></textarea>
-              <mat-error *ngIf="diagnosisForm.get('treatment')?.hasError('required')">
-                Ce champ est requis
-              </mat-error>
-            </mat-form-field>
+                  <div class="info-item" *ngIf="selectedFolder.chronicDiseases?.length">
+                    <mat-icon>medical_services</mat-icon>
+                    <span class="label">Maladies chroniques:</span>
+                    <span class="value">{{ getJoinedArray(selectedFolder.chronicDiseases) }}</span>
+                  </div>
+                </div>
+              </div>
+            </mat-tab>
 
-            <button mat-raised-button color="primary" type="submit" 
-                    [disabled]="!diagnosisForm.valid">
-              Ajouter le diagnostic
-            </button>
-          </form>
-        </div>
-      </mat-tab>
+            <!-- Consultations -->
+            <mat-tab label="Consultations">
+              <div class="tab-content">
+                <mat-accordion>
+                  <mat-expansion-panel *ngFor="let consultation of selectedFolder.consultations">
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>
+                        {{ consultation.date | date:'dd/MM/yyyy' }}
+                      </mat-panel-title>
+                      <mat-panel-description>
+                        Dr. {{ consultation.doctor }}
+                      </mat-panel-description>
+                    </mat-expansion-panel-header>
 
-      <!-- Onglet Prescriptions -->
-      <mat-tab label="Prescriptions">
-        <div class="tab-content">
-          <!-- Liste des prescriptions existantes -->
-          <div class="prescriptions-list" *ngIf="medicalFolder.prescriptions?.length">
-            <h3>Historique des prescriptions</h3>
-            <mat-card *ngFor="let prescription of medicalFolder.prescriptions">
-              <mat-card-header>
-                <mat-card-title>{{ prescription.date | date:'dd/MM/yyyy' }}</mat-card-title>
-              </mat-card-header>
-              <mat-card-content>
-                <p><strong>Médicament:</strong> {{ prescription.medication }}</p>
-                <p><strong>Posologie:</strong> {{ prescription.dosage }}</p>
-                <p><strong>Durée:</strong> {{ prescription.duration }}</p>
-              </mat-card-content>
-            </mat-card>
-          </div>
+                    <p><strong>Motif : </strong>{{ consultation.reason }}</p>
+                    <p><strong>Diagnostic : </strong>{{ consultation.diagnosis }}</p>
+                    <p><strong>Traitement : </strong>{{ consultation.treatment }}</p>
+                  </mat-expansion-panel>
+                </mat-accordion>
 
-          <!-- Formulaire pour ajouter une prescription -->
-          <form [formGroup]="prescriptionForm" (ngSubmit)="addPrescription()" class="prescription-form">
-            <h3>Nouvelle prescription</h3>
-            <mat-form-field appearance="fill">
-              <mat-label>Médicament</mat-label>
-              <input matInput formControlName="medication">
-              <mat-error *ngIf="prescriptionForm.get('medication')?.hasError('required')">
-                Ce champ est requis
-              </mat-error>
-            </mat-form-field>
+                <div *ngIf="!selectedFolder.consultations || selectedFolder.consultations.length === 0" class="no-data">
+                  <p>Aucune consultation enregistrée</p>
+                </div>
+              </div>
+            </mat-tab>
 
-            <mat-form-field appearance="fill">
-              <mat-label>Posologie</mat-label>
-              <input matInput formControlName="dosage">
-              <mat-error *ngIf="prescriptionForm.get('dosage')?.hasError('required')">
-                Ce champ est requis
-              </mat-error>
-            </mat-form-field>
+            <!-- Prescriptions -->
+            <mat-tab label="Prescriptions">
+              <div class="tab-content">
+                <mat-list>
+                  <mat-list-item *ngFor="let prescription of selectedFolder.prescriptions">
+                    <mat-icon matListItemIcon>medication</mat-icon>
+                    <div matListItemTitle>{{ prescription.medication }}</div>
+                    <div matListItemLine>
+                      Posologie: {{ prescription.dosage }} - Durée: {{ prescription.duration }}
+                    </div>
+                    <div matListItemLine>
+                      Prescrit le {{ prescription.date | date:'dd/MM/yyyy' }}
+                    </div>
+                  </mat-list-item>
+                </mat-list>
 
-            <mat-form-field appearance="fill">
-              <mat-label>Durée</mat-label>
-              <input matInput formControlName="duration">
-              <mat-error *ngIf="prescriptionForm.get('duration')?.hasError('required')">
-                Ce champ est requis
-              </mat-error>
-            </mat-form-field>
+                <div *ngIf="!selectedFolder.prescriptions?.length" class="no-data">
+                  <p>Aucune prescription enregistrée</p>
+                </div>
+              </div>
+            </mat-tab>
+          </mat-tab-group>
+        </mat-card-content>
+      </mat-card>
+    </div>
 
-            <button mat-raised-button color="primary" type="submit" 
-                    [disabled]="!prescriptionForm.valid">
-              Ajouter la prescription
-            </button>
-          </form>
-        </div>
-      </mat-tab>
-
-      <!-- Onglet Historique familial -->
-      <mat-tab label="Historique familial">
-        <div class="tab-content">
-          <p class="family-history">
-            {{ medicalFolder.familyHistory || 'Aucun historique familial enregistré.' }}
-          </p>
-        </div>
-      </mat-tab>
-    </mat-tab-group>
-  </div>
-
-  <!-- Message si aucun dossier trouvé -->
-  <div *ngIf="!loading && !error && !medicalFolder" class="no-folder">
-    <mat-card>
-      <mat-card-content>
-        <p>Aucun dossier médical trouvé pour ce patient.</p>
-      </mat-card-content>
-    </mat-card>
+    <!-- Message si aucun dossier sélectionné -->
+    <div class="no-selection" *ngIf="!selectedFolder && !loading">
+      <mat-card>
+        <mat-card-content>
+          <mat-icon>touch_app</mat-icon>
+          <p>Sélectionnez un dossier médical pour voir les détails</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
   </div>
 </div>

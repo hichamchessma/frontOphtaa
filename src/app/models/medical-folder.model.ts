@@ -20,6 +20,16 @@ export interface MedicalFolder {
     description: string;
     treatment: string;
   }[];
+  consultations?: {
+    date: Date;
+    doctor: string;
+    reason: string;
+    diagnosis: string;
+    treatment: string;
+    notes: string;
+    prescription?: string;
+    followUp?: string;
+  }[];
   prescriptions?: {
     date: Date;
     medication: string;
