@@ -23,6 +23,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTabsModule } from '@angular/material/tabs';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -34,6 +35,7 @@ import { AppointmentComponent } from './components/appointment/appointment.compo
 import { ConsultationComponent } from './components/consultation/consultation.component';
 import { NotificationComponent } from './components/notification/notification.component';
 import { AuthService } from './services/auth.service';
+import { MedicalFolderService } from './services/medical-folder.service';
 import { NavbarComponent } from './navbar/navbar.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { PatientsComponent } from './components/patients/patients.component';
@@ -76,9 +78,13 @@ import { PatientsComponent } from './components/patients/patients.component';
     MatProgressSpinnerModule,
     MatDialogModule,
     MatSelectModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatTabsModule
   ],
-  providers: [AuthService],
+  providers: [
+    AuthService,
+    MedicalFolderService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
