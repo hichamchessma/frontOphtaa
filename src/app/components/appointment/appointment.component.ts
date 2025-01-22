@@ -3,15 +3,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
-
-interface Appointment {
-  id: number;
-  patientName: string;
-  date: Date;
-  time: string;
-  reason: string;
-  status: string;
-}
+import { MatDialog } from '@angular/material/dialog';
+import { AppointmentService } from '../../services/appointment.service';
+import { Appointment } from '../../models/appointment.model';
 
 @Component({
   selector: 'app-appointment',
@@ -22,30 +16,40 @@ export class AppointmentComponent implements OnInit {
   displayedColumns: string[] = ['patientName', 'date', 'time', 'reason', 'status', 'actions'];
   dataSource: MatTableDataSource<Appointment>;
   selectedDate: Date = new Date();
+  isLoading = false;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  // Exemple de données (à remplacer par les vraies données de l'API)
-  appointments: Appointment[] = [
-    {
-      id: 1,
-      patientName: 'John Doe',
-      date: new Date(),
-      time: '09:00',
-      reason: 'Consultation',
-      status: 'Confirmé'
-    },
-    // Ajoutez plus de données ici
-  ];
-
-  constructor() {
-    this.dataSource = new MatTableDataSource(this.appointments);
+  constructor(
+    private appointmentService: AppointmentService,
+    private dialog: MatDialog
+  ) {
+    this.dataSource = new MatTableDataSource<Appointment>();
   }
 
   ngOnInit() {
+    this.loadAppointments();
+  }
+
+  ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+  }
+
+  loadAppointments() {
+    this.isLoading = true;
+    this.appointmentService.getAllAppointments()
+      .subscribe({
+        next: (appointments) => {
+          this.dataSource.data = appointments;
+          this.isLoading = false;
+        },
+        error: (error) => {
+          console.error('Erreur lors du chargement des rendez-vous', error);
+          this.isLoading = false;
+        }
+      });
   }
 
   applyFilter(event: Event) {
@@ -58,20 +62,53 @@ export class AppointmentComponent implements OnInit {
   }
 
   showTodayAppointments() {
-    const today = new Date();
-    this.dataSource.filter = today.toDateString();
-    this.dataSource.filterPredicate = (data: Appointment, filter: string) => {
-      return data.date.toDateString() === filter;
-    };
+    this.isLoading = true;
+    this.appointmentService.getTodayAppointments()
+      .subscribe({
+        next: (appointments) => {
+          this.dataSource.data = appointments;
+          this.isLoading = false;
+        },
+        error: (error) => {
+          console.error('Erreur lors du chargement des rendez-vous du jour', error);
+          this.isLoading = false;
+        }
+      });
   }
 
   onDateChange(event: MatDatepickerInputEvent<Date>) {
     if (event.value) {
       this.selectedDate = event.value;
-      this.dataSource.filter = this.selectedDate.toDateString();
-      this.dataSource.filterPredicate = (data: Appointment, filter: string) => {
-        return data.date.toDateString() === filter;
-      };
+      this.isLoading = true;
+      this.appointmentService.getAppointmentsByDate(this.selectedDate)
+        .subscribe({
+          next: (appointments) => {
+            this.dataSource.data = appointments;
+            this.isLoading = false;
+          },
+          error: (error) => {
+            console.error('Erreur lors du chargement des rendez-vous par date', error);
+            this.isLoading = false;
+          }
+        });
+    }
+  }
+
+  editAppointment(appointment: Appointment) {
+    // TODO: Implémenter la modification du rendez-vous avec un dialogue
+  }
+
+  deleteAppointment(id: number) {
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce rendez-vous ?')) {
+      this.appointmentService.deleteAppointment(id)
+        .subscribe({
+          next: () => {
+            this.loadAppointments();
+          },
+          error: (error) => {
+            console.error('Erreur lors de la suppression du rendez-vous', error);
+          }
+        });
     }
   }
 }

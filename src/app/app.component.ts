@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +9,15 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'frontOphtaa';
+  isLoginPage = false;
+
+  constructor(private router: Router) {
+    // S'abonner aux changements de route
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: any) => {
+      // Vérifier si on est sur la page login
+      this.isLoginPage = event.url === '/login';
+    });
+  }
 }

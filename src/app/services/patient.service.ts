@@ -7,7 +7,7 @@ import { Patient } from '../models/patient.model';
   providedIn: 'root'
 })
 export class PatientService {
-  private apiUrl = 'http://localhost:3000/api/patients'; // À adapter selon votre backend
+  private apiUrl = 'http://localhost:8080/api/patients'; // À adapter selon votre backend
   private patientsSubject = new BehaviorSubject<Patient[]>([]);
   patients$ = this.patientsSubject.asObservable();
 

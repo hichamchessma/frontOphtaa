@@ -17,10 +17,10 @@ export class NavbarComponent implements OnInit {
 
   ngOnInit() {
     // Récupérer les informations du docteur connecté
-  
+    // À implémenter plus tard
   }
 
   logout() {
-
+    this.authService.logout();
   }
 }
