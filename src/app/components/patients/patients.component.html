@@ -1,0 +1,102 @@
+<div class="patients-container">
+  <div class="patients-header">
+    <h1>Gestion des Patients</h1>
+    <div class="actions">
+      <div class="search-box">
+        <input 
+          type="text" 
+          [(ngModel)]="searchTerm"
+          (input)="searchPatients()"
+          placeholder="Rechercher un patient..."
+        >
+        <i class="fas fa-search"></i>
+      </div>
+      <button class="add-button" (click)="toggleAddPatient()">
+        <i class="fas fa-plus"></i>
+        Nouveau Patient
+      </button>
+    </div>
+  </div>
+
+  <!-- Formulaire d'ajout/modification -->
+  <div class="patient-form" *ngIf="isAddingPatient">
+    <h2>{{ selectedPatient ? 'Modifier le patient' : 'Ajouter un nouveau patient' }}</h2>
+    <form [formGroup]="patientForm" (ngSubmit)="submitPatient()">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="nom">Nom</label>
+          <input type="text" id="nom" formControlName="nom" placeholder="Nom">
+        </div>
+        <div class="form-group">
+          <label for="prenom">Prénom</label>
+          <input type="text" id="prenom" formControlName="prenom" placeholder="Prénom">
+        </div>
+        <div class="form-group">
+          <label for="dateNaissance">Date de naissance</label>
+          <input type="date" id="dateNaissance" formControlName="dateNaissance">
+        </div>
+        <div class="form-group">
+          <label for="telephone">Téléphone</label>
+          <input type="tel" id="telephone" formControlName="telephone" placeholder="Téléphone">
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" formControlName="email" placeholder="Email">
+        </div>
+        <div class="form-group">
+          <label for="numeroSecuriteSociale">Numéro de sécurité sociale</label>
+          <input type="text" id="numeroSecuriteSociale" formControlName="numeroSecuriteSociale" placeholder="Numéro de sécurité sociale">
+        </div>
+        <div class="form-group full-width">
+          <label for="adresse">Adresse</label>
+          <input type="text" id="adresse" formControlName="adresse" placeholder="Adresse complète">
+        </div>
+        <div class="form-group full-width">
+          <label for="notes">Notes</label>
+          <textarea id="notes" formControlName="notes" placeholder="Notes additionnelles"></textarea>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="cancel-button" (click)="resetForm()">Annuler</button>
+        <button type="submit" class="submit-button" [disabled]="!patientForm.valid">
+          {{ selectedPatient ? 'Mettre à jour' : 'Ajouter' }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Liste des patients -->
+  <div class="patients-list" [class.with-form]="isAddingPatient">
+    <div class="patient-card" *ngFor="let patient of filteredPatients">
+      <div class="patient-info">
+        <h3>{{ patient.nom }} {{ patient.prenom }}</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <i class="fas fa-birthday-cake"></i>
+            <span>{{ patient.dateNaissance | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="info-item">
+            <i class="fas fa-phone"></i>
+            <span>{{ patient.telephone }}</span>
+          </div>
+          <div class="info-item">
+            <i class="fas fa-envelope"></i>
+            <span>{{ patient.email }}</span>
+          </div>
+          <div class="info-item">
+            <i class="fas fa-id-card"></i>
+            <span>{{ patient.numeroSecuriteSociale }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="patient-actions">
+        <button class="edit-button" (click)="editPatient(patient)">
+          <i class="fas fa-edit"></i>
+        </button>
+        <button class="delete-button" (click)="deletePatient(patient.id)">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
