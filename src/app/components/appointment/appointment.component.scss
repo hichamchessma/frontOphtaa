@@ -1,0 +1,77 @@
+.appointment-container {
+  padding: 20px;
+
+  mat-card {
+    margin-bottom: 20px;
+  }
+
+  .filters-container {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    align-items: center;
+
+    mat-form-field {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    button {
+      height: 56px;
+      
+      mat-icon {
+        margin-right: 8px;
+      }
+    }
+  }
+
+  table {
+    width: 100%;
+  }
+
+  .mat-mdc-form-field {
+    font-size: 14px;
+    width: 100%;
+  }
+
+  td, th {
+    &:last-child {
+      width: 100px;
+      text-align: center;
+    }
+  }
+
+  .mat-column-status {
+    width: 120px;
+  }
+
+  .mat-mdc-row:hover {
+    background-color: whitesmoke;
+  }
+
+  .mat-mdc-chip {
+    min-height: 24px;
+    font-size: 12px;
+  }
+
+  .mat-mdc-card-header {
+    margin-bottom: 16px;
+  }
+
+  .mat-mdc-card-title {
+    font-size: 24px;
+    font-weight: 500;
+  }
+
+  // Styles pour les statuts
+  .status-confirmed {
+    background-color: #4CAF50 !important;
+    color: white !important;
+  }
+
+  .status-pending {
+    background-color: #FFC107 !important;
+    color: black !important;
+  }
+}
