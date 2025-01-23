@@ -1,0 +1,9 @@
+.mat-dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  button {
+    background-color: #1976d2;
+    color: white;
+  }

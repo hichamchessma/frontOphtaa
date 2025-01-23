@@ -28,11 +28,21 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log('Form submitted', this.loginForm.value);
-    this.router.navigate(['/dashboard']).then(() => {
-      console.log('Navigation completed');
-    }).catch(err => {
-      console.error('Navigation error:', err);
-    });
+    if (this.loginForm.valid) {
+      const { email, password } = this.loginForm.value;
+      
+      this.authService.login(email, password).subscribe({
+        next: (response) => {
+          console.log('Login successful');
+          this.router.navigate(['/dashboard']);
+        },
+        error: (error) => {
+          console.error('Login error:', error);
+          this.errorMessage = 'Identifiants incorrects. Veuillez réessayer.';
+        }
+      });
+    } else {
+      this.errorMessage = 'Veuillez remplir tous les champs correctement.';
+    }
   }
 }
