@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 
 @Component({
@@ -18,7 +18,7 @@ export class LoginComponent implements OnInit {
     private router: Router
   ) {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.required]], 
       password: ['', Validators.required]
     });
   }
@@ -30,8 +30,14 @@ export class LoginComponent implements OnInit {
   onSubmit() {
     if (this.loginForm.valid) {
       const { email, password } = this.loginForm.value;
+      const isEmail = email.includes('@');
+      const loginData = {
+        identifier: email,
+        password: password,
+        type: isEmail ? 'email' : 'username'
+      };
       
-      this.authService.login(email, password).subscribe({
+      this.authService.login(loginData.identifier, loginData.password).subscribe({
         next: (response) => {
           console.log('Login successful');
           this.router.navigate(['/dashboard']);
