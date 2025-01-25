@@ -9,7 +9,7 @@ import { RegisterComponent } from './register/register.component';
 import { AuthGuard } from './services/auth.guard';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
-import { PatientListComponent } from './components/patient-list/patient-list.component';
+import { PatientDetailsComponent } from './components/patient-details/patient-details.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent , canActivate: [AuthGuard]},
@@ -18,7 +18,6 @@ const routes: Routes = [
   { path: 'reset-password', component: ResetPasswordComponent , canActivate: [AuthGuard]},
   { path: 'dashboard', component: DashboardComponent  , canActivate: [AuthGuard]},
   { path: 'patients', component: PatientsComponent , canActivate: [AuthGuard]},
-  { path: 'patient-list', component: PatientListComponent , canActivate: [AuthGuard]},
   { path: 'rendez-vous', component: AppointmentComponent , canActivate: [AuthGuard]},
   { path: 'dossiers-medicaux', component: MedicalFolderComponent , canActivate: [AuthGuard]},
   { path: '', redirectTo: '/login', pathMatch: 'full' }
