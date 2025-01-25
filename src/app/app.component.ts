@@ -16,8 +16,11 @@ export class AppComponent {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {
-      // Vérifier si on est sur la page login
-      this.isLoginPage = event.url === '/login';
+      // Vérifier si on est sur la page login, forgot-password ou reset-password
+      this.isLoginPage = event.url === '/login' || 
+                        event.url === '/forgot-password' ||
+                        event.url === '/register'|| 
+                        event.url.includes('/reset-password');
     });
   }
 }
