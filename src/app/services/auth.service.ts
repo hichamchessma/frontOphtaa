@@ -42,6 +42,8 @@ export class AuthService {
                     localStorage.setItem('username', username); // Save username
                     localStorage.setItem('jwtToken', this.jwtToken ?? '');  // Store token in localStorage
                     this.isAuthenticatedFlag = true;  // Set authentication flag to true
+                    console.log('Token stored:', this.jwtToken); // Log pour vérifier le token
+
                 }
             })
         );

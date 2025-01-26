@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { Patient } from '../models/patient.model';
 
@@ -15,8 +15,18 @@ export class PatientService {
     this.loadPatients();
   }
 
+  // Méthode pour créer les headers avec le token JWT
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('jwtToken'); // Récupère le token depuis le localStorage
+    console.log('Token retrieved:', token); // Log pour vérifier le token
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}` // Ajoute le token dans le header Authorization
+    });
+  }
+
   private loadPatients() {
-    this.http.get<Patient[]>(this.apiUrl).subscribe(
+    const headers = this.getHeaders();
+    this.http.get<Patient[]>(this.apiUrl, { headers }).subscribe(
       patients => this.patientsSubject.next(patients)
     );
   }
@@ -26,22 +36,27 @@ export class PatientService {
   }
 
   getPatientById(id: number): Observable<Patient> {
-    return this.http.get<Patient>(`${this.apiUrl}/${id}`);
+    const headers = this.getHeaders();
+    return this.http.get<Patient>(`${this.apiUrl}/${id}`, { headers });
   }
 
   addPatient(patient: Omit<Patient, 'id'>): Observable<Patient> {
-    return this.http.post<Patient>(this.apiUrl, patient);
+    const headers = this.getHeaders();
+    return this.http.post<Patient>(this.apiUrl, patient, { headers });
   }
 
   updatePatient(id: number, patient: Patient): Observable<Patient> {
-    return this.http.put<Patient>(`${this.apiUrl}/${id}`, patient);
+    const headers = this.getHeaders();
+    return this.http.put<Patient>(`${this.apiUrl}/${id}`, patient, { headers });
   }
 
   deletePatient(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    const headers = this.getHeaders();
+    return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers });
   }
 
   searchPatients(query: string): Observable<Patient[]> {
-    return this.http.get<Patient[]>(`${this.apiUrl}/search?q=${query}`);
+    const headers = this.getHeaders();
+    return this.http.get<Patient[]>(`${this.apiUrl}/search?q=${query}`, { headers });
   }
 }

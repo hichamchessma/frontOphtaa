@@ -21,7 +21,7 @@ export class ResetPasswordComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.token = this.route.snapshot.queryParams['token'];
+    this.token = this.route.snapshot.queryParams['jwtToken'];
   }
 
   onSubmit() {
