@@ -2,7 +2,7 @@ export interface Patient {
   id: number;
   nom: string;
   prenom: string;
-  dateNaissance: Date;
+  dateNaissance: Date | null; // Allow null values
   telephone: string;
   email: string;
   adresse: string;

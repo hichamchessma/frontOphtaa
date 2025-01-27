@@ -5,6 +5,11 @@ import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { LOCALE_ID } from '@angular/core';
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
+
+registerLocaleData(localeFr);
 
 // Material Imports
 import { MatTableModule } from '@angular/material/table';
@@ -97,7 +102,8 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
   ],
   providers: [
     AuthService,
-    MedicalFolderService
+    MedicalFolderService,
+    { provide: LOCALE_ID, useValue: 'fr-FR' }
   ],
   bootstrap: [AppComponent]
 })

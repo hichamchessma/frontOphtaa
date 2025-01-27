@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { Patient } from '../models/patient.model';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -14,25 +14,51 @@ export class PatientService {
   private patientsSubject = new BehaviorSubject<Patient[]>([]);
   patients$ = this.patientsSubject.asObservable();
 
-  constructor(private http: HttpClient, private router: Router, private snackBar: MatSnackBar) {
-    this.loadPatients();
-  }
+  constructor(private http: HttpClient, private router: Router, private snackBar: MatSnackBar) {}
 
-  // Méthode pour créer les headers avec le token JWT
   private getHeaders(): HttpHeaders {
-    const token = localStorage.getItem('jwtToken'); // Récupère le token depuis le localStorage
-    console.log('Token retrieved:', token); // Log pour vérifier le token
-    if (token) {
-      console.error('No token found in localStorage'); // Ajoute cette ligne
+    const token = localStorage.getItem('jwtToken');
+    console.log('Token retrieved:', token);
+    if (!token) {
+      console.error('No token found in localStorage');
     }
     return new HttpHeaders({
-      'Authorization': `Bearer ${token}` // Ajoute le token dans le header Authorization
+      'Authorization': `Bearer ${token}`
     });
   }
 
-  private loadPatients() {
-    this.http.get<Patient[]>(this.apiUrl, { headers: this.getHeaders() })
+  public loadPatients(): Observable<Patient[]> {
+    return this.http.get<Patient[]>(this.apiUrl, { headers: this.getHeaders() })
       .pipe(
+        map(patients => {
+          console.log('Raw patients data:', patients); // Debug log
+          const formattedPatients = patients.map(patient => {
+            const rawDate = patient.dateNaissance;
+            
+            let formattedDate: Date | null = null;
+            if (rawDate) {
+              // Si la date est une chaîne ISO
+              if (typeof rawDate === 'string') {
+                formattedDate = new Date(rawDate);
+              }
+              // Si la date est déjà un objet Date
+              else if (rawDate instanceof Date) {
+                formattedDate = rawDate;
+              }
+            } else {
+              console.warn('Date de naissance non définie pour le patient:', patient);
+            }
+            
+            
+            return {
+              ...patient,
+              dateNaissance: formattedDate
+            };
+          });
+          
+          this.patientsSubject.next(formattedPatients);
+          return formattedPatients;
+        }),
         catchError((error) => {
           if (error.status === 401) {
             // Rediriger vers la page de connexion
@@ -47,10 +73,7 @@ export class PatientService {
           }
           return throwError(error);
         })
-      )
-      .subscribe((patients) => {
-        this.patientsSubject.next(patients);
-      });
+      );
   }
 
   getPatients(): Observable<Patient[]> {

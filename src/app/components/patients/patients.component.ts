@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PatientService } from '../../services/patient.service';
 import { Patient } from '../../models/patient.model';
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-patients',
@@ -18,7 +20,9 @@ export class PatientsComponent implements OnInit {
 
   constructor(
     private patientService: PatientService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router
   ) {
     this.patientForm = this.fb.group({
       nom: ['', Validators.required],
@@ -33,19 +37,22 @@ export class PatientsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadPatients();
+    if (!this.authService.isAuthenticated()) {
+      this.router.navigate(['/login']);
+    } else {
+      this.loadPatients();
+    }
   }
 
   loadPatients(): void {
-    console.log('Loading patients...'); // Ajoute cette ligne
-    this.patientService.getPatients().subscribe(
+    console.log('Loading patients...');
+    this.patientService.loadPatients().subscribe(
       patients => {
-        console.log('Patients loaded:', patients); // Ajoute cette ligne
         this.patients = patients;
-        this.filteredPatients = patients;
+        this.filteredPatients = this.patients;
       },
       error => {
-        console.error('Error loading patients:', error); // Ajoute cette ligne
+        console.error('Error loading patients:', error);
       }
     );
   }
@@ -110,5 +117,25 @@ export class PatientsComponent implements OnInit {
     this.patientForm.reset();
     this.selectedPatient = null;
     this.isAddingPatient = false;
+  }
+
+  formatDate(date: Date | null): string {
+    if (!date) return 'Non spécifiée';
+    try {
+      // Vérifier si la date est valide
+      const d = new Date(date);
+      if (isNaN(d.getTime())) {
+        console.error('Date invalide:', date);
+        return 'Non spécifiée';
+      }
+      return d.toLocaleDateString('fr-FR', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      });
+    } catch (error) {
+      console.error('Erreur lors du formatage de la date:', error);
+      return 'Non spécifiée';
+    }
   }
 }

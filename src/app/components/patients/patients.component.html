@@ -66,36 +66,60 @@
   </div>
 
   <!-- Liste des patients -->
-  <div class="patients-list" [class.with-form]="isAddingPatient">
+  <div class="patients-grid" [class.with-form]="isAddingPatient">
     <div class="patient-card" *ngFor="let patient of filteredPatients">
-      <div class="patient-info">
-        <h3>{{ patient.nom }} {{ patient.prenom }}</h3>
-        <div class="info-grid">
-          <div class="info-item">
-            <i class="fas fa-birthday-cake"></i>
-            <span>{{ patient.dateNaissance | date:'dd/MM/yyyy' }}</span>
+      <div class="patient-header">
+        <div class="patient-avatar">
+          {{ patient.nom[0] }}{{ patient.prenom[0] }}
+        </div>
+        <div class="patient-name">
+          <h3>{{ patient.nom }} {{ patient.prenom }}</h3>
+          <span class="patient-id">NSS: {{ patient.numeroSecuriteSociale }}</span>
+        </div>
+        <div class="patient-actions">
+          <button class="action-btn edit" (click)="editPatient(patient)" title="Modifier">
+            <i class="fas fa-edit"></i>
+          </button>
+          <button class="action-btn delete" (click)="deletePatient(patient.id)" title="Supprimer">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>
+      
+      <div class="patient-details">
+        <div class="detail-item">
+          <i class="fas fa-birthday-cake"></i>
+          <div class="detail-content">
+            <label>Date de naissance</label>
+            <span>{{ formatDate(patient.dateNaissance) }}</span>
           </div>
-          <div class="info-item">
-            <i class="fas fa-phone"></i>
+        </div>
+        <div class="detail-item">
+          <i class="fas fa-phone"></i>
+          <div class="detail-content">
+            <label>Téléphone</label>
             <span>{{ patient.telephone }}</span>
           </div>
-          <div class="info-item">
-            <i class="fas fa-envelope"></i>
+        </div>
+        <div class="detail-item">
+          <i class="fas fa-envelope"></i>
+          <div class="detail-content">
+            <label>Email</label>
             <span>{{ patient.email }}</span>
           </div>
-          <div class="info-item">
-            <i class="fas fa-id-card"></i>
-            <span>{{ patient.numeroSecuriteSociale }}</span>
+        </div>
+        <div class="detail-item">
+          <i class="fas fa-map-marker-alt"></i>
+          <div class="detail-content">
+            <label>Adresse</label>
+            <span>{{ patient.adresse }}</span>
           </div>
         </div>
       </div>
-      <div class="patient-actions">
-        <button class="edit-button" (click)="editPatient(patient)">
-          <i class="fas fa-edit"></i>
-        </button>
-        <button class="delete-button" (click)="deletePatient(patient.id)">
-          <i class="fas fa-trash"></i>
-        </button>
+      
+      <div class="patient-notes" *ngIf="patient.notes">
+        <i class="fas fa-sticky-note"></i>
+        <p>{{ patient.notes }}</p>
       </div>
     </div>
   </div>
