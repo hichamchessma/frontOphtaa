@@ -119,9 +119,14 @@ export class AuthService {
   }
 
   isAuthenticated(): boolean {
-    // Check if a valid token exists in localStorage (or your preferred storage)
     const token = localStorage.getItem('jwtToken');
-    return !!token; // Return true if token exists, otherwise false
+    if (!token) return false;
+
+    const decodedToken = this.decodeToken(token);
+    if (!decodedToken) return false;
+
+    const expirationDate = decodedToken.exp * 1000; // Convertir en millisecondes
+    return expirationDate > Date.now(); // Vérifier si le token est encore valide
   }
 
   forgotPassword(email: string): Observable<any> {

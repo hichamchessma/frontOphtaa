@@ -37,10 +37,15 @@ export class PatientsComponent implements OnInit {
   }
 
   loadPatients(): void {
+    console.log('Loading patients...'); // Ajoute cette ligne
     this.patientService.getPatients().subscribe(
       patients => {
+        console.log('Patients loaded:', patients); // Ajoute cette ligne
         this.patients = patients;
         this.filteredPatients = patients;
+      },
+      error => {
+        console.error('Error loading patients:', error); // Ajoute cette ligne
       }
     );
   }
