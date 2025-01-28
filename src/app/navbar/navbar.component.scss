@@ -69,3 +69,28 @@
     }
   }
 }
+
+.background-slider {
+  position: absolute;
+  top: 64px;
+  left: 0;
+  width: 100%;
+  height: calc(100% - 64px);
+  overflow: hidden;
+  z-index: -1;
+  
+  img {
+    position: absolute;
+    width: 150%;
+    height: auto;
+    animation: slide 30s linear infinite;
+    object-fit: cover;
+  }
+}
+
+@keyframes slide {
+  0% { transform: translateX(0); }33% 
+  { transform: translateX(-100%); }
+
+
+}
