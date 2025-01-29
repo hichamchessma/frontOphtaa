@@ -17,6 +17,12 @@ export class PatientsComponent implements OnInit {
   searchTerm: string = '';
   isAddingPatient: boolean = false;
   selectedPatient: Patient | null = null;
+  viewMode: 'card' | 'list' = 'card';
+
+  // Pagination
+  currentPage: number = 1;
+  pageSize: number = 10;
+  totalItems: number = 0;
 
   constructor(
     private patientService: PatientService,
@@ -50,6 +56,7 @@ export class PatientsComponent implements OnInit {
       patients => {
         this.patients = patients;
         this.filteredPatients = this.patients;
+        this.totalItems = this.filteredPatients.length;
       },
       error => {
         console.error('Error loading patients:', error);
@@ -68,6 +75,7 @@ export class PatientsComponent implements OnInit {
         patient.numeroSecuriteSociale.includes(search)
       );
     }
+    this.totalItems = this.filteredPatients.length;
   }
 
   toggleAddPatient(): void {
@@ -137,5 +145,22 @@ export class PatientsComponent implements OnInit {
       console.error('Erreur lors du formatage de la date:', error);
       return 'Non spécifiée';
     }
+  }
+
+  toggleViewMode(): void {
+    this.viewMode = this.viewMode === 'card' ? 'list' : 'card';
+  }
+
+  get paginatedPatients(): Patient[] {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    return this.filteredPatients.slice(startIndex, startIndex + this.pageSize);
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+  }
+
+  ceil(value: number): number {
+    return Math.ceil(value);
   }
 }

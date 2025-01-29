@@ -2,6 +2,14 @@
   <div class="patients-header">
     <h1>Gestion des Patients</h1>
     <div class="actions">
+      <div class="view-toggle">
+        <button [class.active]="viewMode === 'card'" (click)="viewMode = 'card'" title="Vue en cartes">
+          <i class="fas fa-th-large"></i>
+        </button>
+        <button [class.active]="viewMode === 'list'" (click)="viewMode = 'list'" title="Vue en liste">
+          <i class="fas fa-list"></i>
+        </button>
+      </div>
       <div class="search-box">
         <input 
           type="text" 
@@ -66,61 +74,114 @@
   </div>
 
   <!-- Liste des patients -->
-  <div class="patients-grid" [class.with-form]="isAddingPatient">
-    <div class="patient-card" *ngFor="let patient of filteredPatients">
-      <div class="patient-header">
-        <div class="patient-avatar">
-          {{ patient.nom[0] }}{{ patient.prenom[0] }}
+  <div [ngClass]="{'patients-grid': viewMode === 'card', 'patients-list': viewMode === 'list'}" [class.with-form]="isAddingPatient">
+    <!-- Vue en cartes -->
+    <ng-container *ngIf="viewMode === 'card'">
+      <div class="patient-card" *ngFor="let patient of filteredPatients">
+        <div class="patient-header">
+          <div class="patient-avatar">
+            {{ patient.nom[0] }}{{ patient.prenom[0] }}
+          </div>
+          <div class="patient-name">
+            <h3>{{ patient.nom }} {{ patient.prenom }}</h3>
+            <span class="patient-id">NSS: {{ patient.numeroSecuriteSociale }}</span>
+          </div>
+          <div class="patient-actions">
+            <button class="action-btn edit" (click)="editPatient(patient)" title="Modifier">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="action-btn delete" (click)="deletePatient(patient.id)" title="Supprimer">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
         </div>
-        <div class="patient-name">
-          <h3>{{ patient.nom }} {{ patient.prenom }}</h3>
-          <span class="patient-id">NSS: {{ patient.numeroSecuriteSociale }}</span>
+        
+        <div class="patient-details">
+          <div class="detail-item">
+            <i class="fas fa-birthday-cake"></i>
+            <div class="detail-content">
+              <label>Date de naissance</label>
+              <span>{{ formatDate(patient.dateNaissance) }}</span>
+            </div>
+          </div>
+          <div class="detail-item">
+            <i class="fas fa-phone"></i>
+            <div class="detail-content">
+              <label>Téléphone</label>
+              <span>{{ patient.telephone }}</span>
+            </div>
+          </div>
+          <div class="detail-item">
+            <i class="fas fa-envelope"></i>
+            <div class="detail-content">
+              <label>Email</label>
+              <span>{{ patient.email }}</span>
+            </div>
+          </div>
+          <div class="detail-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <div class="detail-content">
+              <label>Adresse</label>
+              <span>{{ patient.adresse }}</span>
+            </div>
+          </div>
         </div>
-        <div class="patient-actions">
-          <button class="action-btn edit" (click)="editPatient(patient)" title="Modifier">
-            <i class="fas fa-edit"></i>
-          </button>
-          <button class="action-btn delete" (click)="deletePatient(patient.id)" title="Supprimer">
-            <i class="fas fa-trash"></i>
-          </button>
+        
+        <div class="patient-notes" *ngIf="patient.notes">
+          <i class="fas fa-sticky-note"></i>
+          <p>{{ patient.notes }}</p>
         </div>
       </div>
-      
-      <div class="patient-details">
-        <div class="detail-item">
-          <i class="fas fa-birthday-cake"></i>
-          <div class="detail-content">
-            <label>Date de naissance</label>
-            <span>{{ formatDate(patient.dateNaissance) }}</span>
-          </div>
-        </div>
-        <div class="detail-item">
-          <i class="fas fa-phone"></i>
-          <div class="detail-content">
-            <label>Téléphone</label>
-            <span>{{ patient.telephone }}</span>
-          </div>
-        </div>
-        <div class="detail-item">
-          <i class="fas fa-envelope"></i>
-          <div class="detail-content">
-            <label>Email</label>
-            <span>{{ patient.email }}</span>
-          </div>
-        </div>
-        <div class="detail-item">
-          <i class="fas fa-map-marker-alt"></i>
-          <div class="detail-content">
-            <label>Adresse</label>
-            <span>{{ patient.adresse }}</span>
-          </div>
-        </div>
+    </ng-container>
+
+    <!-- Vue en liste -->
+    <ng-container *ngIf="viewMode === 'list'">
+      <table class="patients-table">
+        <thead>
+          <tr>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Date de naissance</th>
+            <th>Téléphone</th>
+            <th>Email</th>
+            <th>NSS</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let patient of paginatedPatients">
+            <td>{{ patient.nom }}</td>
+            <td>{{ patient.prenom }}</td>
+            <td>{{ formatDate(patient.dateNaissance) }}</td>
+            <td>{{ patient.telephone }}</td>
+            <td>{{ patient.email }}</td>
+            <td>{{ patient.numeroSecuriteSociale }}</td>
+            <td class="actions">
+              <button class="action-btn edit" (click)="editPatient(patient)" title="Modifier">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="action-btn delete" (click)="deletePatient(patient.id)" title="Supprimer">
+                <i class="fas fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Pagination -->
+      <div class="pagination">
+        <button 
+          [disabled]="currentPage === 1"
+          (click)="onPageChange(currentPage - 1)">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <span>Page {{ currentPage }} sur {{ ceil(totalItems / pageSize) | number }}</span>
+        <button 
+          [disabled]="currentPage >= totalItems / pageSize"
+          (click)="onPageChange(currentPage + 1)">
+          <i class="fas fa-chevron-right"></i>
+        </button>
       </div>
-      
-      <div class="patient-notes" *ngIf="patient.notes">
-        <i class="fas fa-sticky-note"></i>
-        <p>{{ patient.notes }}</p>
-      </div>
-    </div>
+    </ng-container>
   </div>
 </div>
