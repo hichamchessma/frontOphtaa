@@ -356,53 +356,49 @@ $transition: all 0.3s ease;
 .patients-list {
   margin-top: 2rem;
   background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  border-radius: $border-radius;
+  box-shadow: $box-shadow;
+  padding: 20px;
+  transition: $transition;
 
-  .patients-table {
-    width: 100%;
-    border-collapse: collapse;
+  .patient-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    transition: $transition;
 
-    th, td {
-      padding: 1rem;
-      text-align: left;
-      border-bottom: 1px solid #eee;
+    &:hover {
+      background: #f9f9f9;
+      transform: translateY(-2px);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
-    th {
-      background: #f8f9fa;
-      font-weight: 600;
-      color: #495057;
+    i {
+      font-size: 20px;
+      color: $primary-color;
+      margin-right: 10px;
     }
 
-    tr:hover {
-      background: #f8f9fa;
-    }
+    .detail-content {
+      flex: 1;
 
-    td.actions {
-      white-space: nowrap;
-      width: 100px;
+      label {
+        font-weight: bold;
+        color: $text-color;
+      }
 
-      .action-btn {
-        padding: 0.4rem;
-        margin: 0 0.2rem;
-        background: none;
-        border: none;
-        cursor: pointer;
-        color: #6c757d;
-        transition: color 0.3s ease;
-
-        &.edit:hover {
-          color: #007bff;
-        }
-
-        &.delete:hover {
-          color: #dc3545;
-        }
+      span {
+        color: $text-color;
       }
     }
   }
+}
+
+div.patients-list th,
+div.patients-list td {
+  padding: 15px;
+  border: 1px solid #ddd;
 }
 
 .pagination {
@@ -435,5 +431,34 @@ $transition: all 0.3s ease;
   span {
     color: #495057;
     font-weight: 500;
+  }
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 15px;
+  transition: $transition;
+
+  i {
+    font-size: 20px;
+    color: $primary-color;
+    margin-right: 10px;
+  }
+
+  .detail-content {
+    flex: 1;
+
+    label {
+      font-weight: bold;
+      color: $text-color;
+      margin-bottom: 5px;
+    }
+
+    span {
+      color: $text-color;
+    }
   }
 }
