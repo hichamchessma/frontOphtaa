@@ -51,6 +51,7 @@ import { PatientsComponent } from './components/patients/patients.component';
 import { RegisterComponent } from './register/register.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { ConfirmationModalComponent } from './components/patients/confirmation-modal.component';
 
 @NgModule({
   declarations: [
@@ -67,7 +68,8 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
     NotificationComponent,
     NavbarComponent,
     SidebarComponent,
-    PatientsComponent
+    PatientsComponent,
+    ConfirmationModalComponent
   ],
   imports: [
     BrowserModule,

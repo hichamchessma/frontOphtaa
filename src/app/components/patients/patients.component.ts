@@ -18,6 +18,9 @@ export class PatientsComponent implements OnInit {
   isAddingPatient: boolean = false;
   selectedPatient: Patient | null = null;
   viewMode: 'card' | 'list' = 'card';
+  showConfirmationModal: boolean = false;
+  patientIdToDelete: number | null = null;
+  confirmationMessage: string = '';
 
   // Pagination
   currentPage: number = 1;
@@ -114,11 +117,36 @@ export class PatientsComponent implements OnInit {
   }
 
   deletePatient(id: number): void {
-    if (confirm('Êtes-vous sûr de vouloir supprimer ce patient ?')) {
-      this.patientService.deletePatient(id).subscribe(() => {
-        this.loadPatients();
-      });
+    const patientToDelete = this.patients.find(patient => patient.id === id);
+    if (patientToDelete) {
+        this.showConfirmationModal = true;
+        this.patientIdToDelete = id;
+        this.confirmationMessage = `Êtes-vous sûr de vouloir supprimer ${patientToDelete.prenom} ${patientToDelete.nom} ?`;
     }
+  }
+
+  onConfirmDelete(): void {
+    console.log('Confirm delete for ID:', this.patientIdToDelete);
+    if (this.patientIdToDelete !== null) {
+      console.log('Deleting patient with ID:', this.patientIdToDelete);
+      this.patientService.deletePatient(this.patientIdToDelete).subscribe(
+        () => {
+          console.log('Patient deleted successfully');
+          this.loadPatients();
+          this.showConfirmationModal = false;
+          this.patientIdToDelete = null;
+        },
+        error => {
+          console.error('Error deleting patient:', error);
+        }
+      );
+    }
+  }
+
+  onCancelDelete(): void {
+    console.log('Delete cancelled');
+    this.showConfirmationModal = false;
+    this.patientIdToDelete = null;
   }
 
   resetForm(): void {

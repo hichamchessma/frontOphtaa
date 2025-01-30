@@ -183,5 +183,11 @@
         </button>
       </div>
     </ng-container>
+    <app-confirmation-modal 
+      *ngIf="showConfirmationModal" 
+      [message]="confirmationMessage" 
+      (confirm)="onConfirmDelete()" 
+      (cancel)="onCancelDelete()">
+    </app-confirmation-modal>
   </div>
 </div>
