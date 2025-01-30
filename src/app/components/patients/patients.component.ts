@@ -112,7 +112,12 @@ export class PatientsComponent implements OnInit {
 
   editPatient(patient: Patient): void {
     this.selectedPatient = patient;
-    this.patientForm.patchValue(patient);
+    // Convert date if necessary
+    const formattedDate = patient.dateNaissance ? new Date(patient.dateNaissance).toISOString().substring(0, 10) : '';
+    this.patientForm.patchValue({
+        ...patient,
+        dateNaissance: formattedDate
+    });
     this.isAddingPatient = true;
   }
 
