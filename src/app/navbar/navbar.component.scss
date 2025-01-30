@@ -1,13 +1,20 @@
 .navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 1000;
+  background-color: white; /* ou la couleur de votre navbar */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0.5rem 2rem;
-  background-color: #ffffff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   height: 64px;
 
   .navbar-brand {
+    margin-left: 10px; /* Ajustez la valeur selon vos besoins */
     .logo {
       height: 50px;
       width: 50px;
@@ -48,6 +55,8 @@
     }
 
     .logout-btn {
+      margin-left: 20px; /* Augmenter la marge à gauche pour plus de visibilité */
+      margin-right: 40px; /* Ajouter une marge à droite pour éloigner du bord */
       display: flex;
       align-items: center;
       gap: 0.5rem;
@@ -91,6 +100,9 @@
 @keyframes slide {
   0% { transform: translateX(0); }33% 
   { transform: translateX(-100%); }
+}
 
-
+:host {
+  display: block;
+  padding-top: 64px; /* ajustez selon la hauteur de votre navbar */
 }
