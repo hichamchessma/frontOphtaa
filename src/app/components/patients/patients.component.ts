@@ -196,4 +196,12 @@ export class PatientsComponent implements OnInit {
   ceil(value: number): number {
     return Math.ceil(value);
   }
+
+  affecterRendezVous(patient: Patient) {
+    // Logique pour affecter un nouveau rendez-vous à ce patient
+    console.log('Affecter un nouveau rendez-vous pour:', patient);
+    // Ici, vous pouvez ajouter la logique pour ouvrir un formulaire ou rediriger vers une page de rendez-vous
+    // Exemple de redirection vers une page de rendez-vous
+    this.router.navigate(['/rendez-vous', patient.id]);
+  }
 }

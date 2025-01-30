@@ -93,6 +93,7 @@
             <button class="action-btn delete" (click)="deletePatient(patient.id)" title="Supprimer">
               <i class="fas fa-trash"></i>
             </button>
+            <button (click)="affecterRendezVous(patient)">Affecter un nouveau rendez-vous</button>
           </div>
         </div>
         
@@ -163,6 +164,7 @@
               <button class="action-btn delete" (click)="deletePatient(patient.id)" title="Supprimer">
                 <i class="fas fa-trash"></i>
               </button>
+              <button (click)="affecterRendezVous(patient)">Affecter un nouveau rendez-vous</button>
             </td>
           </tr>
         </tbody>

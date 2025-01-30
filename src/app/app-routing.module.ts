@@ -10,6 +10,7 @@ import { AuthGuard } from './services/auth.guard';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { PatientDetailsComponent } from './components/patient-details/patient-details.component';
+import { AppointmentDetailsComponent } from './components/appointment-details/appointment-details.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent , canActivate: [AuthGuard]},
@@ -19,6 +20,7 @@ const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent  , canActivate: [AuthGuard]},
   { path: 'patients', component: PatientsComponent , canActivate: [AuthGuard]},
   { path: 'rendez-vous', component: AppointmentComponent , canActivate: [AuthGuard]},
+  { path: 'rendez-vous/:id', component: AppointmentDetailsComponent , canActivate: [AuthGuard]},
   { path: 'dossiers-medicaux', component: MedicalFolderComponent , canActivate: [AuthGuard]},
   { path: '', redirectTo: '/login', pathMatch: 'full' }
 ];
